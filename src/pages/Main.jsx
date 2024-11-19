@@ -1,7 +1,7 @@
-import SpeechToText from "../components/SpeechToText";
+import SpeechToText from "../components/Main/SpeechToText";
 const Main = () => {
   return (
-    <div>
+    <div style={{width: "100%"}}>
       <SpeechToText></SpeechToText>
     </div>
   );

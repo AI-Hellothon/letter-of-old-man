@@ -1,4 +1,4 @@
-import { ButtonContainer } from "./Header.style";
+import { ButtonContainer } from "../Common.style";
 
 import letterImage from "../../images/Header/letter.png";
 import settingImage from "../../images/Header/setting.png";

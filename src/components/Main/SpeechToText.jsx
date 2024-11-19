@@ -1,14 +1,26 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
-import postChat from "../api/eliceChat";
+
+import postChat from "../../api/eliceChat";
+
+import { ChatAnswer, ChatQuestion } from "./SpeechToText.style";
+
+import soundImage from "../../images/SpeechToText/sound.png";
+import { ButtonContainer } from "../Common.style";
+import { COLOR } from "../../constants/color";
 
 // Function to convert audio blob to base64 encoded string
-const audioBlobToBase64 = blob => {
+const audioBlobToBase64 = (blob) => {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.onloadend = () => {
       const arrayBuffer = reader.result;
-      const base64Audio = btoa(new Uint8Array(arrayBuffer).reduce((data, byte) => data + String.fromCharCode(byte), ""));
+      const base64Audio = btoa(
+        new Uint8Array(arrayBuffer).reduce(
+          (data, byte) => data + String.fromCharCode(byte),
+          ""
+        )
+      );
       resolve(base64Audio);
     };
     reader.onerror = reject;
@@ -26,14 +38,10 @@ const SpeechToText = () => {
   useEffect(() => {
     return () => {
       if (mediaRecorder) {
-        mediaRecorder.stream.getTracks().forEach(track => track.stop());
+        mediaRecorder.stream.getTracks().forEach((track) => track.stop());
       }
     };
   }, [mediaRecorder]);
-
-  // if(!import.meta.env.GOOGLE_API_KEY){
-  //   throw new Error("구글 api키가 없다.")
-  // }
 
   const apiKey = process.env.REACT_APP_GOOGLE_API_KEY;
 
@@ -45,7 +53,7 @@ const SpeechToText = () => {
       // console.log('Recording started');
 
       // Event listener to handle data availability
-      recorder.addEventListener("dataavailable", async event => {
+      recorder.addEventListener("dataavailable", async (event) => {
         // console.log('Data available event triggered');
         const audioBlob = event.data;
 
@@ -55,16 +63,19 @@ const SpeechToText = () => {
         try {
           const startTime = performance.now();
 
-          const response = await axios.post(`https://speech.googleapis.com/v1/speech:recognize?key=${apiKey}`, {
-            config: {
-              encoding: "WEBM_OPUS",
-              sampleRateHertz: 48000,
-              languageCode: "ko-KR",
-            },
-            audio: {
-              content: base64Audio,
-            },
-          });
+          const response = await axios.post(
+            `https://speech.googleapis.com/v1/speech:recognize?key=${apiKey}`,
+            {
+              config: {
+                encoding: "WEBM_OPUS",
+                sampleRateHertz: 48000,
+                languageCode: "ko-KR",
+              },
+              audio: {
+                content: base64Audio,
+              },
+            }
+          );
 
           const endTime = performance.now();
           const elapsedTime = endTime - startTime;
@@ -77,15 +88,21 @@ const SpeechToText = () => {
             setTranscription(tts);
 
             const chatResponse = await postChat(tts);
-            console.log(chatResponse)
+            console.log(chatResponse);
 
             setChatResult(chatResponse.data?.choices[0]?.message?.content);
           } else {
-            console.log("No transcription results in the API response:", response.data);
+            console.log(
+              "No transcription results in the API response:",
+              response.data
+            );
             setTranscription("No transcription available");
           }
         } catch (error) {
-          console.error("Error with Google Speech-to-Text API:", error.response.data);
+          console.error(
+            "Error with Google Speech-to-Text API:",
+            error.response.data
+          );
         }
       });
 
@@ -105,71 +122,39 @@ const SpeechToText = () => {
   };
 
   const mode4 = (
-    <div style={{ display: "flex" }}>
+    <div style={{ width: "100%" }}>
       <div
         style={{
-          background: "#E0E0E0",
           display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
           alignItems: "center",
-          fontFamily: "Roboto, sans-serif",
+          padding: "10px 22px 10px 22px",
+          gap: 12,
         }}
       >
-        <h1 style={{ fontSize: "48px", color: "#3F51B5", marginBottom: "40px" }}>Google STT test</h1>
-        {!recording ? (
-          <button
-            onClick={startRecording}
-            style={{
-              background: "#4CAF50",
-              color: "white",
-              fontSize: "24px",
-              padding: "10px 20px",
-              borderRadius: "5px",
-              border: "none",
-              cursor: "pointer",
-              marginBottom: "20px",
-              boxShadow: "0 3px 5px rgba(0,0,0,0.3)",
-            }}
-          >
-            녹음 시작
-          </button>
-        ) : (
-          <button
-            onClick={stopRecording}
-            style={{
-              background: "#F44336",
-              color: "white",
-              fontSize: "24px",
-              padding: "10px 20px",
-              borderRadius: "5px",
-              border: "none",
-              cursor: "pointer",
-              marginBottom: "20px",
-              boxShadow: "0 3px 5px rgba(0,0,0,0.3)",
-            }}
-          >
-            녹음 종료
-          </button>
-        )}
-        <p
+        <ChatAnswer>안녕</ChatAnswer>
+        <ButtonContainer
           style={{
-            fontSize: "24px",
-            color: "#212121",
-            maxWidth: "80%",
-            lineHeight: "1.5",
-            textAlign: "left",
-            background: "white",
-            padding: "20px",
-            borderRadius: "5px",
-            boxShadow: "0 1px 3px rgba(0,0,0,0.2)",
+            backgroundColor: COLOR.answerColor,
+            padding: 10,
+            borderRadius: "50%",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
           }}
         >
-          STT 값: {transcription}
-        </p>
+          <img src={soundImage} alt="음성 재생 이미지" />
+        </ButtonContainer>
       </div>
-      <div>
-        <p>답변: {chatResult}</p>
+
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "flex-end",
+          padding: "10px 22px 10px 22px",
+          boxShadow: 1
+        }}
+      >
+        <ChatQuestion>hi</ChatQuestion>
       </div>
     </div>
   );
