@@ -119,10 +119,7 @@ const SpeechToText = () => {
             setTranscription("No transcription available");
           }
         } catch (error) {
-          console.error(
-            "Error with Google Speech-to-Text API:",
-            error
-          );
+          console.error("Error with Google Speech-to-Text API:", error);
         }
       });
 
@@ -178,23 +175,30 @@ const SpeechToText = () => {
 
               {/* 채팅 답변 */}
               <ChatAnswerContainer>
-                {isChatLoading ? (
-                  <ChatAnswer>답변을 기다리는 중입니다.</ChatAnswer>
-                ) : (
-                  <ChatAnswer>{chatResult[index]}</ChatAnswer>
+                {/* 채팅 답변이 오지 않을때 빈 채팅을 보여주지 않기 위한 로직 */}
+                {index < chatResult.length && (
+                  <>
+                    <ChatAnswer>{chatResult[index]}</ChatAnswer>
+                    <ButtonContainer
+                      style={{
+                        backgroundColor: COLOR.answerColor,
+                        padding: 10,
+                      }}
+                    >
+                      <img src={soundImage} alt="음성 재생 이미지" />
+                    </ButtonContainer>
+                  </>
                 )}
-                <ButtonContainer
-                  style={{
-                    backgroundColor: COLOR.answerColor,
-                    padding: 10,
-                  }}
-                >
-                  <img src={soundImage} alt="음성 재생 이미지" />
-                </ButtonContainer>
               </ChatAnswerContainer>
             </div>
           );
         })}
+        {/* 채팅 기다리는 중 로직 */}
+        {isChatLoading && (
+          <ChatAnswerContainer>
+            <ChatAnswer>답변을 기다리는 중입니다.</ChatAnswer>
+          </ChatAnswerContainer>
+        )}
 
         <div ref={messageEndRef}></div>
       </div>
