@@ -1,0 +1,8 @@
+/* 스크롤 안보이게 */
+body {
+  -ms-overflow-style: none;
+}
+
+::-webkit-scrollbar {
+  display: none;
+}

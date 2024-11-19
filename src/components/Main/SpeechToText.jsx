@@ -138,6 +138,13 @@ const SpeechToText = () => {
     }
   };
 
+  const ttsHandler = (text) => {
+    const tts = new SpeechSynthesisUtterance(text);
+    tts.rate = 2;
+    tts.pitch = 0.5;
+    window.speechSynthesis.speak(tts);
+  };
+
   const mode4 = (
     <div
       style={{
@@ -159,6 +166,9 @@ const SpeechToText = () => {
             style={{
               backgroundColor: COLOR.answerColor,
               padding: 10,
+            }}
+            onClick={(e) => {
+              ttsHandler(firstQuestion);
             }}
           >
             <img src={soundImage} alt="음성 재생 이미지" />
@@ -183,6 +193,9 @@ const SpeechToText = () => {
                       style={{
                         backgroundColor: COLOR.answerColor,
                         padding: 10,
+                      }}
+                      onClick={(e) => {
+                        ttsHandler(chatResult[index]);
                       }}
                     >
                       <img src={soundImage} alt="음성 재생 이미지" />
