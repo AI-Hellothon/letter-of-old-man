@@ -1,9 +1,14 @@
 import axios from "axios";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 import postChat from "../../api/eliceChat";
 
-import { ChatAnswer, ChatQuestion } from "./SpeechToText.style";
+import {
+  ChatAnswer,
+  ChatAnswerContainer,
+  ChatQuestion,
+  ChatQuestionContainer,
+} from "./SpeechToText.style";
 
 import { ButtonContainer } from "../Common.style";
 import { COLOR } from "../../constants/color";
@@ -13,6 +18,7 @@ import logoWhiteImage from "../../images/SpeechToText/logo-white.png";
 import textImage from "../../images/SpeechToText/text.png";
 import soundLargeImage from "../../images/SpeechToText/sound-large.png";
 import { FONT } from "../../constants/font";
+import googleSpeechToText from "../../api/googleStt";
 
 // Function to convert audio blob to base64 encoded string
 const audioBlobToBase64 = (blob) => {
@@ -36,8 +42,13 @@ const audioBlobToBase64 = (blob) => {
 const SpeechToText = () => {
   const [recording, setRecording] = useState(false);
   const [mediaRecorder, setMediaRecorder] = useState(null);
-  const [transcription, setTranscription] = useState("");
-  const [chatResult, setChatResult] = useState("");
+  const [transcription, setTranscription] = useState([]);
+  const [chatResult, setChatResult] = useState([]);
+  const [isChatLoading, setIsChatLoading] = useState(false);
+
+  const messageEndRef = useRef(null);
+
+  const firstQuestion = `안녕하세요.\n무엇을 도와드릴까요?`;
 
   // Cleanup function to stop recording and release media resources
   useEffect(() => {
@@ -48,7 +59,12 @@ const SpeechToText = () => {
     };
   }, [mediaRecorder]);
 
-  const apiKey = process.env.REACT_APP_GOOGLE_API_KEY;
+  // 채팅 스크롤 맨 아래로 내리는 로직
+  useEffect(() => {
+    if (messageEndRef.current) {
+      messageEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [chatResult, transcription]);
 
   const startRecording = async () => {
     try {
@@ -68,19 +84,7 @@ const SpeechToText = () => {
         try {
           const startTime = performance.now();
 
-          const response = await axios.post(
-            `https://speech.googleapis.com/v1/speech:recognize?key=${apiKey}`,
-            {
-              config: {
-                encoding: "WEBM_OPUS",
-                sampleRateHertz: 48000,
-                languageCode: "ko-KR",
-              },
-              audio: {
-                content: base64Audio,
-              },
-            }
-          );
+          const response = await googleSpeechToText(base64Audio);
 
           const endTime = performance.now();
           const elapsedTime = endTime - startTime;
@@ -90,11 +94,23 @@ const SpeechToText = () => {
 
           if (response.data.results && response.data.results.length > 0) {
             const tts = response.data.results[0].alternatives[0].transcript;
-            setTranscription(tts);
+            setTranscription([...transcription, tts]);
+            setIsChatLoading(true);
 
-            const chatResponse = await postChat(tts);
+            try {
+              const chatResponse = await postChat(tts);
+              // console.log(chatResponse.data?.choices[0]?.message?.content)
 
-            setChatResult(chatResponse.data?.choices[0]?.message?.content);
+              setChatResult([
+                ...chatResult,
+                chatResponse.data?.choices[0]?.message?.content,
+              ]);
+            } catch (e) {
+              setChatResult([...chatResult, "죄송하지만 다시 요청해주세요."]);
+              throw new Error("엘리스 채팅 오류: ", e);
+            } finally {
+              setIsChatLoading(false);
+            }
           } else {
             console.log(
               "No transcription results in the API response:",
@@ -105,7 +121,7 @@ const SpeechToText = () => {
         } catch (error) {
           console.error(
             "Error with Google Speech-to-Text API:",
-            error.response.data
+            error
           );
         }
       });
@@ -137,15 +153,11 @@ const SpeechToText = () => {
     >
       {/* 채팅 영역 */}
       <div style={{ overflow: "auto" }}>
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            padding: "10px 22px",
-            gap: 12,
-          }}
-        >
-          <ChatAnswer>안녕</ChatAnswer>
+        {/* 처음 질문 */}
+        <ChatAnswerContainer>
+          <ChatAnswer style={{ whiteSpace: "pre-wrap" }}>
+            {firstQuestion}
+          </ChatAnswer>
           <ButtonContainer
             style={{
               backgroundColor: COLOR.answerColor,
@@ -154,18 +166,37 @@ const SpeechToText = () => {
           >
             <img src={soundImage} alt="음성 재생 이미지" />
           </ButtonContainer>
-        </div>
+        </ChatAnswerContainer>
 
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "flex-end",
-            padding: "10px 22px 10px 22px",
-            boxShadow: 1,
-          }}
-        >
-          <ChatQuestion>그래 안녕</ChatQuestion>
-        </div>
+        {transcription.map((item, index) => {
+          return (
+            <div key={index}>
+              {/* 채팅 질문 */}
+              <ChatQuestionContainer>
+                <ChatQuestion>{transcription[index]}</ChatQuestion>
+              </ChatQuestionContainer>
+
+              {/* 채팅 답변 */}
+              <ChatAnswerContainer>
+                {isChatLoading ? (
+                  <ChatAnswer>답변을 기다리는 중입니다.</ChatAnswer>
+                ) : (
+                  <ChatAnswer>{chatResult[index]}</ChatAnswer>
+                )}
+                <ButtonContainer
+                  style={{
+                    backgroundColor: COLOR.answerColor,
+                    padding: 10,
+                  }}
+                >
+                  <img src={soundImage} alt="음성 재생 이미지" />
+                </ButtonContainer>
+              </ChatAnswerContainer>
+            </div>
+          );
+        })}
+
+        <div ref={messageEndRef}></div>
       </div>
 
       {/* 음성 받는 영역 */}
@@ -182,7 +213,7 @@ const SpeechToText = () => {
         {recording ? (
           // 음성 받는 상태
           <>
-          {/* 사운드 버튼 */}
+            {/* 사운드 버튼 */}
             <ButtonContainer
               style={{
                 backgroundColor: COLOR.primaryColor,
@@ -212,7 +243,7 @@ const SpeechToText = () => {
                   borderRadius: 25,
                   fontWeight: 700,
                   fontSize: FONT.defaultSize,
-                  padding: 10
+                  padding: 10,
                 }}
               >{`00가 듣고 있는 중이에요`}</span>
             </ButtonContainer>

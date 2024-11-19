@@ -2,6 +2,19 @@ import styled, { css } from "styled-components";
 import { COLOR } from "../../constants/color";
 import { FONT } from "../../constants/font";
 
+export const ChatAnswerContainer = styled.div`
+  display: flex;
+  align-items: center;
+  padding: 10px 22px;
+  gap: 12px;
+`;
+
+export const ChatQuestionContainer = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  padding: 10px 22px;
+`;
+
 const commonStyle = css`
   border-radius: 25px;
   max-width: 317px;
