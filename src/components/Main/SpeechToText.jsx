@@ -5,9 +5,14 @@ import postChat from "../../api/eliceChat";
 
 import { ChatAnswer, ChatQuestion } from "./SpeechToText.style";
 
-import soundImage from "../../images/SpeechToText/sound.png";
 import { ButtonContainer } from "../Common.style";
 import { COLOR } from "../../constants/color";
+
+import soundImage from "../../images/SpeechToText/sound.png";
+import logoWhiteImage from "../../images/SpeechToText/logo-white.png";
+import textImage from "../../images/SpeechToText/text.png";
+import soundLargeImage from "../../images/SpeechToText/sound-large.png";
+import { FONT } from "../../constants/font";
 
 // Function to convert audio blob to base64 encoded string
 const audioBlobToBase64 = (blob) => {
@@ -88,7 +93,6 @@ const SpeechToText = () => {
             setTranscription(tts);
 
             const chatResponse = await postChat(tts);
-            console.log(chatResponse);
 
             setChatResult(chatResponse.data?.choices[0]?.message?.content);
           } else {
@@ -122,39 +126,150 @@ const SpeechToText = () => {
   };
 
   const mode4 = (
-    <div style={{ width: "100%" }}>
+    <div
+      style={{
+        width: "100%",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "space-between",
+        height: "calc(100vh - 73px)",
+      }}
+    >
+      {/* 채팅 영역 */}
+      <div style={{ overflow: "auto" }}>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            padding: "10px 22px",
+            gap: 12,
+          }}
+        >
+          <ChatAnswer>안녕</ChatAnswer>
+          <ButtonContainer
+            style={{
+              backgroundColor: COLOR.answerColor,
+              padding: 10,
+            }}
+          >
+            <img src={soundImage} alt="음성 재생 이미지" />
+          </ButtonContainer>
+        </div>
+
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "flex-end",
+            padding: "10px 22px 10px 22px",
+            boxShadow: 1,
+          }}
+        >
+          <ChatQuestion>그래 안녕</ChatQuestion>
+        </div>
+      </div>
+
+      {/* 음성 받는 영역 */}
       <div
         style={{
           display: "flex",
           alignItems: "center",
-          padding: "10px 22px 10px 22px",
-          gap: 12,
+          justifyContent: "center",
+          position: "relative",
+          padding: "18% 0",
+          overflow: "hidden",
         }}
       >
-        <ChatAnswer>안녕</ChatAnswer>
-        <ButtonContainer
-          style={{
-            backgroundColor: COLOR.answerColor,
-            padding: 10,
-            borderRadius: "50%",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <img src={soundImage} alt="음성 재생 이미지" />
-        </ButtonContainer>
-      </div>
+        {recording ? (
+          // 음성 받는 상태
+          <>
+          {/* 사운드 버튼 */}
+            <ButtonContainer
+              style={{
+                backgroundColor: COLOR.primaryColor,
+                width: 130,
+                height: 130,
+                zIndex: 10,
+                position: "relative",
+              }}
+              onClick={(e) => {
+                stopRecording();
+              }}
+            >
+              <img
+                style={{ width: 74, height: 74 }}
+                src={soundLargeImage}
+                alt="음성 입력 버튼"
+              />
 
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "flex-end",
-          padding: "10px 22px 10px 22px",
-          boxShadow: 1
-        }}
-      >
-        <ChatQuestion>hi</ChatQuestion>
+              {/* ~가 듣고 있는 중 텍스트 */}
+              <span
+                style={{
+                  position: "absolute",
+                  whiteSpace: "nowrap",
+                  bottom: -25,
+                  color: COLOR.questionFontColor,
+                  backgroundColor: "white",
+                  borderRadius: 25,
+                  fontWeight: 700,
+                  fontSize: FONT.defaultSize,
+                  padding: 10
+                }}
+              >{`00가 듣고 있는 중이에요`}</span>
+            </ButtonContainer>
+
+            {/* 버튼 감싸고 있는 원 */}
+            <div
+              style={{
+                backgroundColor: COLOR.primaryColor15,
+                width: 330,
+                height: 330,
+                borderRadius: "50%",
+                position: "absolute",
+              }}
+            ></div>
+            <div
+              style={{
+                backgroundColor: COLOR.primaryColor15,
+                width: 198,
+                height: 198,
+                borderRadius: "50%",
+                position: "absolute",
+              }}
+            ></div>
+          </>
+        ) : (
+          // 음성 받지 않는 상태
+          <ButtonContainer
+            style={{
+              backgroundColor: COLOR.primaryColor,
+              width: 130,
+              height: 130,
+            }}
+            onClick={(e) => {
+              startRecording();
+            }}
+          >
+            <img
+              style={{ width: 81, height: 63 }}
+              src={logoWhiteImage}
+              alt="음성 입력 버튼"
+            />
+          </ButtonContainer>
+        )}
+        {/* text 입력 받는 버튼 */}
+        {!recording && (
+          <ButtonContainer
+            style={{
+              backgroundColor: "white",
+              width: 72,
+              height: 72,
+              position: "absolute",
+              right: "6%",
+            }}
+          >
+            <img src={textImage} alt="텍스트 입력 버튼" />
+          </ButtonContainer>
+        )}
       </div>
     </div>
   );
