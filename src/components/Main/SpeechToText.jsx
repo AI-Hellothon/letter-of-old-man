@@ -94,6 +94,7 @@ const SpeechToText = () => {
 
           if (response.data.results && response.data.results.length > 0) {
             const tts = response.data.results[0].alternatives[0].transcript;
+            // console.log(tts);
             setTranscription([...transcription, tts]);
             setIsChatLoading(true);
 
@@ -116,7 +117,7 @@ const SpeechToText = () => {
               "No transcription results in the API response:",
               response.data
             );
-            setTranscription("No transcription available");
+            setTranscription([...transcription,"녹음이 실패했습니다.\n다시 시도해주세요."]);
           }
         } catch (error) {
           console.error("Error with Google Speech-to-Text API:", error);
