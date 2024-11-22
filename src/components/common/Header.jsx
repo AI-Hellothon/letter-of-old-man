@@ -2,8 +2,12 @@ import { ButtonContainer } from "../Common.style";
 
 import letterImage from "../../images/Header/letter.png";
 import settingImage from "../../images/Header/setting.png";
+import { useRecoilState } from "recoil";
+import { isModalState } from "../../store/headerAtom";
 
 const Header = () => {
+  const [isModal, setIsModal] = useRecoilState(isModalState);
+
   return (
     <div
       style={{
@@ -19,7 +23,11 @@ const Header = () => {
           alt="로고 이미지"
         />
       </ButtonContainer>
-      <ButtonContainer>
+      <ButtonContainer 
+        onClick={(e)=>{
+          setIsModal(true);
+        }}
+      >
         <img
           style={{ width: 29, height: 32 }}
           src={settingImage}

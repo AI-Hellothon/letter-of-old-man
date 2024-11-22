@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "노인의 편지",
+  "name": "노인의 편지 MVP",
   "icons": [
     {
       "src": "favicon.ico",
