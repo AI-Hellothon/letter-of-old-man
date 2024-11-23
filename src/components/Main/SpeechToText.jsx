@@ -418,12 +418,11 @@ const SpeechToText = () => {
                 style={{
                   position: "absolute",
                   whiteSpace: "nowrap",
-                  bottom: -25,
                   color: COLOR.questionFontColor,
                   backgroundColor: "white",
                   borderRadius: 25,
-                  fontWeight: 700,
-                  fontSize: FONT.defaultSize,
+                  fontWeight: 300,
+                  fontSize: 18,
                   padding: 10,
                 }}
               >{`00가 듣고 있는 중이에요`}</span>
@@ -493,6 +492,7 @@ const SpeechToText = () => {
                   border: "none",
                   fontSize: 20,
                   width: "70%",
+                  color: COLOR.questionFontColor
                 }}
                 type="text"
                 onChange={(e) => {
