@@ -17,6 +17,9 @@ import soundImage from "../../images/SpeechToText/sound.png";
 import logoWhiteImage from "../../images/SpeechToText/logo-white.png";
 import textImage from "../../images/SpeechToText/text.png";
 import soundLargeImage from "../../images/SpeechToText/sound-large.png";
+import closeImage from "../../images/common/close.png";
+import textWhiteImage from "../../images/SpeechToText/text-white.png";
+
 import { FONT } from "../../constants/font";
 import googleSpeechToText from "../../api/googleStt";
 
@@ -45,6 +48,7 @@ const SpeechToText = () => {
   const [transcription, setTranscription] = useState([]);
   const [chatResult, setChatResult] = useState([]);
   const [isChatLoading, setIsChatLoading] = useState(false);
+  const [isChat, setIsChat] = useState(false);
 
   const messageEndRef = useRef(null);
 
@@ -117,7 +121,10 @@ const SpeechToText = () => {
               "No transcription results in the API response:",
               response.data
             );
-            setTranscription([...transcription,"녹음이 실패했습니다.\n다시 시도해주세요."]);
+            setTranscription([
+              ...transcription,
+              "녹음이 실패했습니다.\n다시 시도해주세요.",
+            ]);
           }
         } catch (error) {
           console.error("Error with Google Speech-to-Text API:", error);
@@ -286,6 +293,82 @@ const SpeechToText = () => {
               }}
             ></div>
           </>
+        ) : // 채팅 클릭시
+        isChat ? (
+          <div
+            style={{
+              width: "100%",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              padding: 20,
+            }}
+          >
+            <div
+              style={{
+                backgroundColor: COLOR.primaryColor,
+                width: 130,
+                height: 130,
+                zIndex: 10,
+                borderRadius: "50%",
+                position: "absolute",
+              }}
+            ></div>
+            <div
+              style={{
+                padding: 18,
+                width: "100%",
+                zIndex: 20,
+                backgroundColor: "white",
+                borderRadius: 28,
+                display: "flex",
+                gap: 18
+              }}
+            >
+              <ButtonContainer onClick={(e)=>{
+                setIsChat(false);
+              }}>
+                <img src={closeImage} alt="" />
+              </ButtonContainer>
+              <input
+                style={{
+                  border: "none",
+                  flex:1  
+                }}
+                type="text"
+              />
+              <ButtonContainer
+                style={{
+                  backgroundColor: COLOR.primaryColor,
+                  width: 51,
+                  height: 51,
+                  
+                }}
+              >
+                <img src={textWhiteImage} alt="" />
+              </ButtonContainer>
+            </div>
+
+            {/* 주변원 */}
+            <div
+              style={{
+                backgroundColor: COLOR.primaryColor15,
+                width: 330,
+                height: 330,
+                borderRadius: "50%",
+                position: "absolute",
+              }}
+            ></div>
+            <div
+              style={{
+                backgroundColor: COLOR.primaryColor15,
+                width: 198,
+                height: 198,
+                borderRadius: "50%",
+                position: "absolute",
+              }}
+            ></div>
+          </div>
         ) : (
           // 음성 받지 않는 상태
           <ButtonContainer
@@ -306,7 +389,7 @@ const SpeechToText = () => {
           </ButtonContainer>
         )}
         {/* text 입력 받는 버튼 */}
-        {!recording && (
+        {!recording && !isChat && (
           <ButtonContainer
             style={{
               backgroundColor: "white",
@@ -314,6 +397,9 @@ const SpeechToText = () => {
               height: 72,
               position: "absolute",
               right: "6%",
+            }}
+            onClick={(e)=>{
+              setIsChat(true);
             }}
           >
             <img src={textImage} alt="텍스트 입력 버튼" />
