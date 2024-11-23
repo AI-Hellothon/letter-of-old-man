@@ -7,7 +7,7 @@ export const ContentsContainer = styled.div`
   padding: 14px;
   border-radius: ${STYLE.borderRadius}px;
   width: 100%;
-  box-shadow: 5px 5px 12px -9px ${COLOR.questionFontColor};
+  box-shadow: 0px 4px 8.4px 2px ${COLOR.shadow};
 `;
 
 export const ContentsWrapper = styled.div`

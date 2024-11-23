@@ -7,5 +7,5 @@ export const isModalState = atom({
 
 export const speakerIndexState = atom({
     key: "speakerIndexState",
-    default: 0
+    default: 1
 })

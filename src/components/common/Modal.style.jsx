@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { COLOR } from "../../constants/color";
 
 export const ModalContainer = styled.div`
   width: 100%;
@@ -12,16 +13,17 @@ export const ModalContainer = styled.div`
 export const VoiceChoiceContainer = styled.div`
   width: 100%;
   border-radius: 25px;
-  background-color: white;
-  padding: 16px;
+  background-color: ${COLOR.white90};
+  padding: 8px 16px;
   margin-top: 8px;
+  box-shadow: 0px 4px 8.4px 2px ${COLOR.shadow};
 `;
 
 export const VoiceChoiceItem = styled.div`
   width: 100%;
   display: flex;
   justify-content: space-between;
-  padding: 8px 0px;
+  padding: 8px 14px;
 
   &:not(:last-child) {
     border-bottom: 1px solid #eee;
@@ -29,11 +31,11 @@ export const VoiceChoiceItem = styled.div`
 `;
 
 export const ModalButtonWrapper = styled.div`
-    display: flex;
-    justify-content: space-between;
-    gap: 16px;
-    margin-top: 16px;
-`
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 18px;
+`;
 
 export const Button = styled.button`
   border: none;
@@ -43,9 +45,10 @@ export const Button = styled.button`
   display: flex;
   justify-content: center;
   align-items: center;
-  flex:1;
+  box-shadow: 0px 4px 8.4px 2px ${COLOR.shadow};
+  flex: 1;
 
   &:hover {
     cursor: pointer;
   }
-`
+`;

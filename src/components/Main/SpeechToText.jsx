@@ -10,7 +10,7 @@ import {
   ChatQuestionContainer,
 } from "./SpeechToText.style";
 
-import { ButtonContainer } from "../Common.style";
+import { ButtonContainer, ShadowButtonContainer } from "../Common.style";
 import { COLOR } from "../../constants/color";
 
 import soundImage from "../../images/SpeechToText/sound.png";
@@ -155,7 +155,7 @@ const SpeechToText = () => {
 
         // eliceTts 함수 호출
         const response = await eliceTts(mp4FileURL, text);
-        console.log(response);
+        // console.log(response);
         const blob = new Blob([response.data]);
 
         // Blob을 ArrayBuffer로 변환
@@ -386,8 +386,9 @@ const SpeechToText = () => {
           alignItems: "center",
           justifyContent: "center",
           position: "relative",
-          padding: "18% 0",
+          padding: "12% 0",
           overflow: "hidden",
+          backgroundColor: "#F1F7FF",
         }}
       >
         {recording ? (
@@ -503,8 +504,8 @@ const SpeechToText = () => {
               <ButtonContainer
                 style={{
                   backgroundColor: COLOR.primaryColor,
-                  width: 51,
-                  height: 51,
+                  width: 55,
+                  height: 50,
                 }}
                 onClick={async (e) => {
                   setTranscription([...transcription, chatText]);
@@ -524,7 +525,11 @@ const SpeechToText = () => {
                   }
                 }}
               >
-                <img src={textWhiteImage} alt="" />
+                <img
+                  style={{ position: "relative", bottom: -2, right: -0.5 }}
+                  src={textWhiteImage}
+                  alt=""
+                />
               </ButtonContainer>
             </div>
 
@@ -553,15 +558,15 @@ const SpeechToText = () => {
           <ButtonContainer
             style={{
               backgroundColor: COLOR.primaryColor,
-              width: 130,
-              height: 130,
+              width: 120,
+              height: 120,
             }}
             onClick={(e) => {
               startRecording();
             }}
           >
             <img
-              style={{ width: 81, height: 63 }}
+              style={{ width: 76, height: 58 }}
               src={logoWhiteImage}
               alt="음성 입력 버튼"
             />
@@ -569,20 +574,24 @@ const SpeechToText = () => {
         )}
         {/* text 입력 받는 버튼 */}
         {!recording && !isChat && (
-          <ButtonContainer
+          <ShadowButtonContainer
             style={{
               backgroundColor: "white",
               width: 72,
               height: 72,
               position: "absolute",
-              right: "6%",
+              right: "10%",
             }}
             onClick={(e) => {
               setIsChat(true);
             }}
           >
-            <img src={textImage} alt="텍스트 입력 버튼" />
-          </ButtonContainer>
+            <img
+              style={{ position: "relative", right: -1, bottom: -2 }}
+              src={textImage}
+              alt="텍스트 입력 버튼"
+            />
+          </ShadowButtonContainer>
         )}
       </div>
     </div>

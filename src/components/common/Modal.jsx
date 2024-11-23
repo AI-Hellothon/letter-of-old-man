@@ -16,6 +16,7 @@ import { useRecoilState } from "recoil";
 import { isModalState, speakerIndexState } from "../../store/headerAtom";
 import { ButtonContainer } from "../Common.style";
 import { useState } from "react";
+import { STYLE } from "../../constants/style";
 
 const Modal = () => {
   const [isModal, setIsModal] = useRecoilState(isModalState);
@@ -33,8 +34,8 @@ const Modal = () => {
       {/* 모달 헤더 */}
       <div
         style={{
-          backgroundColor: COLOR.backgroundColor,
-          padding: "72px 26px 42px 26px",
+          backgroundColor: `${COLOR.backgroundColor}F9`,
+          padding: `15px ${STYLE.padding}px`,
           display: "flex",
           justifyContent: "space-between",
         }}
@@ -48,30 +49,38 @@ const Modal = () => {
           }}
           style={{ color: COLOR.questionFontColor, alignItems: "center" }}
         >
-          <img src={closeImage} alt="" />
+          <img style={{width: 25, height: 25}} src={closeImage} alt="" />
         </ButtonContainer>
       </div>
 
-      <div style={{ padding: "0px 26px" }}>
+      <div style={{ padding: "0px 30px", marginTop: 44 }}>
         {/* 음성 선택 */}
         <VoiceChoiceContainer>
           {voices.map((item, index) => {
             return (
               <VoiceChoiceItem key={index}>
-                <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 12,
+                    padding: "16px 0px",
+                  }}
+                >
                   <img
                     src={soundImage}
                     alt=""
                     style={{
                       backgroundColor: "#FFAC52",
-                      padding: 6,
                       borderRadius: 10,
+                      padding: 6,
                     }}
                   />
                   <span
                     style={{
                       color: COLOR.questionFontColor,
                       whiteSpace: "nowrap",
+                      fontSize: 20,
                     }}
                   >
                     {item.text}
@@ -98,17 +107,21 @@ const Modal = () => {
         {/* button */}
         <ModalButtonWrapper>
           <Button
-            style={{ backgroundColor: "white", color: COLOR.questionFontColor }}
-            onClick={(e)=>{
-                setIsModal(false);
+            style={{
+              backgroundColor: COLOR.white90,
+              color: COLOR.questionFontColor,
+              border: `0.2px solid ${COLOR.border}`,
+            }}
+            onClick={(e) => {
+              setIsModal(false);
             }}
           >
             취소
           </Button>
           <Button
             style={{ backgroundColor: COLOR.primaryColor, color: "white" }}
-            onClick={(e)=>{
-                setIsModal(false);
+            onClick={(e) => {
+              setIsModal(false);
             }}
           >
             확인

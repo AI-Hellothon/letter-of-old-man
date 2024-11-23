@@ -21,7 +21,7 @@ const commonStyle = css`
   padding: 20px;
   font-size: ${FONT.defaultSize}px;
   position: relative;
-  box-shadow: 5px 5px 12px -9px ${COLOR.questionFontColor};
+  box-shadow: 0px 4px 8.4px 2px ${COLOR.shadow};
 `;
 
 export const ChatAnswer = styled.div`

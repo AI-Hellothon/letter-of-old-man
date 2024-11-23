@@ -87,7 +87,7 @@ const ChildRecord = () => {
             backgroundColor: "white",
             textAlign: "center",
             padding: 16,
-            boxShadow: `5px 5px 12px -9px ${COLOR.questionFontColor}`
+            boxShadow: `0px 4px 8.4px 2px ${COLOR.shadow}`
           }}
         >
           <span
