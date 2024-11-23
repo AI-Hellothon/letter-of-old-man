@@ -1,6 +1,9 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Main from "../pages/Main";
 import ChatBot from "../components/ChatBot";
+import ChildMain from "../pages/ChildMain";
+import Report from "../pages/Report";
+import ChatLog from "../pages/ChatLog";
 
 const router = createBrowserRouter(
   [
@@ -12,6 +15,18 @@ const router = createBrowserRouter(
       path: "/chat",
       element: <ChatBot />,
     },
+    {
+      path: "/child",
+      element: <ChildMain />
+    },
+    {
+      path: "/child/report",
+      element: <Report />
+    },
+    {
+      path: "/child/chat-log",
+      element: <ChatLog />
+    }
   ],
   {
     basename: "/proxy/3000", // 이 부분으로 경로에 prefix를 추가

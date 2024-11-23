@@ -19,7 +19,6 @@ const commonStyle = css`
   border-radius: 25px;
   max-width: 317px;
   padding: 20px;
-  font-weight: 700;
   font-size: ${FONT.defaultSize}px;
   position: relative;
   box-shadow: 5px 5px 12px -9px ${COLOR.questionFontColor};

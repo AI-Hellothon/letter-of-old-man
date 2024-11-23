@@ -17,6 +17,9 @@ import soundImage from "../../images/SpeechToText/sound.png";
 import logoWhiteImage from "../../images/SpeechToText/logo-white.png";
 import textImage from "../../images/SpeechToText/text.png";
 import soundLargeImage from "../../images/SpeechToText/sound-large.png";
+import closeImage from "../../images/common/close.png";
+import textWhiteImage from "../../images/SpeechToText/text-white.png";
+
 import { FONT } from "../../constants/font";
 import googleSpeechToText from "../../api/googleStt";
 
@@ -45,6 +48,8 @@ const SpeechToText = () => {
   const [transcription, setTranscription] = useState([]);
   const [chatResult, setChatResult] = useState([]);
   const [isChatLoading, setIsChatLoading] = useState(false);
+  const [isChat, setIsChat] = useState(false);
+  const [chatText, setChatText] = useState("");
 
   const messageEndRef = useRef(null);
 
@@ -65,6 +70,18 @@ const SpeechToText = () => {
       messageEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
   }, [chatResult, transcription]);
+
+  const requestEliceChat = async (text) => {
+    try {
+      const chatResponse = await postChat(text);
+      // console.log(chatResponse.data?.choices[0]?.message?.content)
+
+      return chatResponse.data?.choices[0]?.message?.content;
+    } catch (e) {
+      return "죄송하지만 다시 요청해주세요.";
+      throw new Error("엘리스 채팅 오류: ", e);
+    }
+  };
 
   const startRecording = async () => {
     try {
@@ -98,32 +115,24 @@ const SpeechToText = () => {
             setTranscription([...transcription, tts]);
             setIsChatLoading(true);
 
-            try {
-              const chatResponse = await postChat(tts);
-              // console.log(chatResponse.data?.choices[0]?.message?.content)
-
-              setChatResult([
-                ...chatResult,
-                chatResponse.data?.choices[0]?.message?.content,
-              ]);
-            } catch (e) {
-              setChatResult([...chatResult, "죄송하지만 다시 요청해주세요."]);
-              throw new Error("엘리스 채팅 오류: ", e);
-            } finally {
-              setIsChatLoading(false);
-            }
+            const chatResponse = await requestEliceChat(tts);
+            setChatResult([...chatResult, chatResponse]);
           } else {
             console.log(
               "No transcription results in the API response:",
               response.data
             );
-            setTranscription([...transcription,"녹음이 실패했습니다.\n다시 시도해주세요."]);
+            setTranscription([
+              ...transcription,
+              "녹음이 실패했습니다.\n다시 시도해주세요.",
+            ]);
           }
         } catch (error) {
           console.error("Error with Google Speech-to-Text API:", error);
         }
       });
 
+      setIsChatLoading(false);
       setRecording(true);
       setMediaRecorder(recorder);
     } catch (error) {
@@ -286,6 +295,97 @@ const SpeechToText = () => {
               }}
             ></div>
           </>
+        ) : // 채팅 클릭시
+        isChat ? (
+          <div
+            style={{
+              width: "100%",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              padding: 20,
+            }}
+          >
+            <div
+              style={{
+                backgroundColor: COLOR.primaryColor,
+                width: 130,
+                height: 130,
+                zIndex: 10,
+                borderRadius: "50%",
+                position: "absolute",
+              }}
+            ></div>
+            <div
+              style={{
+                padding: 18,
+                width: "100%",
+                zIndex: 20,
+                backgroundColor: "white",
+                borderRadius: 28,
+                display: "flex",
+                gap: 18,
+              }}
+            >
+              <ButtonContainer
+                onClick={(e) => {
+                  setIsChat(false);
+                }}
+              >
+                <img src={closeImage} alt="" />
+              </ButtonContainer>
+              <input
+                style={{
+                  border: "none",
+                  flex: 1,
+                }}
+                type="text"
+                onChange={(e) => {
+                  setChatText(e.target.value);
+                  // console.log(chatText);
+                }}
+                value={chatText}
+              />
+              <ButtonContainer
+                style={{
+                  backgroundColor: COLOR.primaryColor,
+                  width: 51,
+                  height: 51,
+                }}
+                onClick={async (e) => {
+                  setTranscription([...transcription, chatText]);
+                  setIsChatLoading(true);
+
+                  const chatResponse = await requestEliceChat(chatText);
+                  setChatResult([...chatResult, chatResponse]);
+                  setChatText("");
+                  setIsChatLoading(false);
+                }}
+              >
+                <img src={textWhiteImage} alt="" />
+              </ButtonContainer>
+            </div>
+
+            {/* 주변원 */}
+            <div
+              style={{
+                backgroundColor: COLOR.primaryColor15,
+                width: 330,
+                height: 330,
+                borderRadius: "50%",
+                position: "absolute",
+              }}
+            ></div>
+            <div
+              style={{
+                backgroundColor: COLOR.primaryColor15,
+                width: 198,
+                height: 198,
+                borderRadius: "50%",
+                position: "absolute",
+              }}
+            ></div>
+          </div>
         ) : (
           // 음성 받지 않는 상태
           <ButtonContainer
@@ -306,7 +406,7 @@ const SpeechToText = () => {
           </ButtonContainer>
         )}
         {/* text 입력 받는 버튼 */}
-        {!recording && (
+        {!recording && !isChat && (
           <ButtonContainer
             style={{
               backgroundColor: "white",
@@ -314,6 +414,9 @@ const SpeechToText = () => {
               height: 72,
               position: "absolute",
               right: "6%",
+            }}
+            onClick={(e) => {
+              setIsChat(true);
             }}
           >
             <img src={textImage} alt="텍스트 입력 버튼" />
