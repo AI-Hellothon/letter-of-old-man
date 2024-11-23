@@ -1,4 +1,4 @@
-import { STLYE } from "../constants/style";
+import { STYLE } from "../constants/style";
 import { COLOR } from "../constants/color";
 
 import picaChuImage from "../images/ChildMain/picachu.png";
@@ -21,7 +21,7 @@ const ChildMain = () => {
   return (
     <>
       <Header />
-      <div style={{ padding: `0px ${STLYE.padding}px` }}>
+      <div style={{ padding: `0px ${STYLE.padding}px` }}>
         {/* 이미지 부분 */}
         <div
           style={{
@@ -30,7 +30,7 @@ const ChildMain = () => {
             width: "232px",
             height: "268px",
             margin: "auto",
-            borderRadius: STLYE.borderRadius,
+            borderRadius: STYLE.borderRadius,
             position: "relative",
           }}
         >
@@ -70,7 +70,6 @@ const ChildMain = () => {
           </div>
 
           <ContentsSecond
-            image={detailImage}
             title={"오늘의 하루 자세히 보기"}
             contents={"자세히"}
           ></ContentsSecond>

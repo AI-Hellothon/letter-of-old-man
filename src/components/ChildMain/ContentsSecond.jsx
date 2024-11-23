@@ -1,9 +1,10 @@
 import { COLOR } from "../../constants/color";
 import { ContentsContainer, ContentsWrapper } from "./ChildMain.style";
 
+import detailImage from "../../images/ChildMain/detail.png"
 import linkImage from "../../images/ChildMain/link.png";
 
-const ContentsSecond = ({ style, image, title, contents }) => {
+const ContentsSecond = ({ style, title, contents }) => {
   return (
     <ContentsContainer
       style={{
@@ -15,7 +16,7 @@ const ContentsSecond = ({ style, image, title, contents }) => {
       }}
     >
       <ContentsWrapper>
-        <img style={{ width: 38, height: 38 }} src={image} alt="" />
+        <img style={{ width: 38, height: 38 }} src={detailImage} alt="" />
 
         <div style={{ display: "flex", flexDirection: "column" }}>
           <span
