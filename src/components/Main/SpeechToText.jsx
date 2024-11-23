@@ -116,8 +116,8 @@ const SpeechToText = () => {
             setIsChatLoading(true);
 
             const chatResponse = await requestEliceChat(tts);
-            setIsChatLoading(false);
             setChatResult([...chatResult, chatResponse]);
+            setIsChatLoading(false);
           } else {
             console.log(
               "No transcription results in the API response:",
@@ -337,7 +337,8 @@ const SpeechToText = () => {
               <input
                 style={{
                   border: "none",
-                  flex: 1,
+                  fontSize: 20,
+                  width: "70%"
                 }}
                 type="text"
                 onChange={(e) => {
