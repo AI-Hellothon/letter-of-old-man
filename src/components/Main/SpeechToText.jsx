@@ -19,6 +19,7 @@ import textImage from "../../images/SpeechToText/text.png";
 import soundLargeImage from "../../images/SpeechToText/sound-large.png";
 import closeImage from "../../images/common/close.png";
 import textWhiteImage from "../../images/SpeechToText/text-white.png";
+import loadingImage from "../../images/SpeechToText/loading.png";
 
 import { FONT } from "../../constants/font";
 import googleSpeechToText from "../../apis/googleStt";
@@ -55,6 +56,8 @@ const SpeechToText = () => {
   const [isChatLoading, setIsChatLoading] = useState(false);
   const [isChat, setIsChat] = useState(false);
   const [chatText, setChatText] = useState("");
+  const [isTtsLoading, setIsTtsLoading] = useState(false);
+  const [nowTtsIndex, setNowTtsIndex] = useState(0);
 
   const [speakerIndex, setSpeakerIndex] = useRecoilState(speakerIndexState);
 
@@ -92,9 +95,22 @@ const SpeechToText = () => {
     }
   }, [chatResult, transcription]);
 
-  const handlePlayTts = async (index, text) => {
+  const handlePlayTts = async (index, text, ttsIndex) => {
     // TTS 음성을 가져오고 재생
-    const audio = await getNaverStt(index, text);
+    setIsTtsLoading(true);
+    setNowTtsIndex(ttsIndex);
+    console.log(nowTtsIndex);
+
+    try {
+      if (index == 0) {
+      } else {
+        const audio = await getNaverStt(index, text);
+      }
+    } catch (error) {
+      throw new Error(`음성 재생 오류 : ${error}`);
+    } finally {
+      setIsTtsLoading(false);
+    }
 
     // 음성이 끝날 때의 처리를 추가할 수 있음
     // audio.onended = () => {
@@ -223,10 +239,18 @@ const SpeechToText = () => {
               padding: 10,
             }}
             onClick={(e) => {
-              handlePlayTts(speakerIndex, firstQuestion);
+              handlePlayTts(speakerIndex, firstQuestion, 0);
             }}
           >
-            <img src={soundImage} alt="음성 재생 이미지" />
+            { nowTtsIndex==0 && isTtsLoading ?  (
+              <img
+                style={{ animation: "rotate 1.5s linear infinite" }}
+                src={loadingImage}
+                alt="음성 로딩 이미지"
+              />
+            ) : (
+              <img src={soundImage} alt="음성 재생 이미지" />
+            )}
           </ButtonContainer>
         </ChatAnswerContainer>
 
@@ -250,10 +274,18 @@ const SpeechToText = () => {
                         padding: 10,
                       }}
                       onClick={(e) => {
-                        handlePlayTts(speakerIndex, chatResult[index]);
+                        handlePlayTts(speakerIndex, chatResult[index], index+1);
                       }}
                     >
-                      <img src={soundImage} alt="음성 재생 이미지" />
+                      { nowTtsIndex==index+1 && isTtsLoading ? (
+                        <img
+                          style={{ animation: "rotate 1.5s linear infinite" }}
+                          src={loadingImage}
+                          alt="음성 로딩 이미지"
+                        />
+                      ) : (
+                        <img src={soundImage} alt="음성 재생 이미지" />
+                      )}
                     </ButtonContainer>
                   </>
                 )}

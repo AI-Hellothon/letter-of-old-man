@@ -70,6 +70,7 @@ const ChildRecord = () => {
             backgroundColor: "white",
             textAlign: "center",
             padding: 16,
+            boxShadow: `5px 5px 12px -9px ${COLOR.questionFontColor}`
           }}
         >
           <span
