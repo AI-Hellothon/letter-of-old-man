@@ -24,6 +24,9 @@ import { FONT } from "../../constants/font";
 import googleSpeechToText from "../../apis/googleStt";
 import { getChat, saveChat } from "../../apis/api/chat";
 import getCurrentDate from "../../utils/getCurrentDate";
+import { getNaverStt } from "../../apis/api/naverTts";
+import { useRecoilState } from "recoil";
+import { speakerIndexState } from "../../store/headerAtom";
 
 // Function to convert audio blob to base64 encoded string
 const audioBlobToBase64 = (blob) => {
@@ -53,6 +56,8 @@ const SpeechToText = () => {
   const [isChat, setIsChat] = useState(false);
   const [chatText, setChatText] = useState("");
 
+  const [speakerIndex, setSpeakerIndex] = useRecoilState(speakerIndexState);
+
   const messageEndRef = useRef(null);
 
   const firstQuestion = `안녕하세요.\n무엇을 도와드릴까요?`;
@@ -64,8 +69,8 @@ const SpeechToText = () => {
     const fetchChatLog = async (date) => {
       const res = await getChat(date);
       // console.log(res);
-      setTranscription(res.data.map(item => item.question));
-      setChatResult(res.data.map(item => item.answer));
+      setTranscription(res.data.map((item) => item.question));
+      setChatResult(res.data.map((item) => item.answer));
     };
 
     fetchChatLog(currentDate);
@@ -86,6 +91,16 @@ const SpeechToText = () => {
       messageEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
   }, [chatResult, transcription]);
+
+  const handlePlayTts = async (index, text) => {
+    // TTS 음성을 가져오고 재생
+    const audio = await getNaverStt(index, text);
+
+    // 음성이 끝날 때의 처리를 추가할 수 있음
+    // audio.onended = () => {
+    //   console.log("Audio has finished playing.");
+    // };
+  };
 
   const requestEliceChat = async (text) => {
     try {
@@ -208,7 +223,7 @@ const SpeechToText = () => {
               padding: 10,
             }}
             onClick={(e) => {
-              ttsHandler(firstQuestion);
+              handlePlayTts(speakerIndex, firstQuestion);
             }}
           >
             <img src={soundImage} alt="음성 재생 이미지" />
@@ -235,7 +250,7 @@ const SpeechToText = () => {
                         padding: 10,
                       }}
                       onClick={(e) => {
-                        ttsHandler(chatResult[index]);
+                        handlePlayTts(speakerIndex, chatResult[index]);
                       }}
                     >
                       <img src={soundImage} alt="음성 재생 이미지" />

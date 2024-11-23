@@ -13,18 +13,18 @@ import checkOnImage from "../../images/common/check-on.png";
 import checkOffImage from "../../images/common/check-off.png";
 
 import { useRecoilState } from "recoil";
-import { isModalState } from "../../store/headerAtom";
+import { isModalState, speakerIndexState } from "../../store/headerAtom";
 import { ButtonContainer } from "../Common.style";
 import { useState } from "react";
 
 const Modal = () => {
   const [isModal, setIsModal] = useRecoilState(isModalState);
-  const [nowVoiceIndex, setNowVoiceIndex] = useState(1);
+  const [speakerIndex, setSpeakerIndex] = useRecoilState(speakerIndexState);
 
   const voices = [
     { text: "내 자녀 음성", voice: null },
-    { text: "일반 남성 음성", voice: null },
     { text: "일반 여성 음성", voice: null },
+    { text: "일반 남성 음성", voice: null },
     { text: "일반 아이 음성", voice: null },
   ];
 
@@ -77,14 +77,14 @@ const Modal = () => {
                     {item.text}
                   </span>
                 </div>
-                {index == nowVoiceIndex ? (
+                {index == speakerIndex ? (
                   <ButtonContainer>
                     <img src={checkOnImage} alt="" />
                   </ButtonContainer>
                 ) : (
                   <ButtonContainer
                     onClick={(e) => {
-                      setNowVoiceIndex(index);
+                      setSpeakerIndex(index);
                     }}
                   >
                     <img src={checkOffImage} alt="" />
