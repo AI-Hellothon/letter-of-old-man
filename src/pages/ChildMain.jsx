@@ -12,6 +12,7 @@ import settingWhiteImage from "../images/common/settingWhite.png";
 import { ButtonContainer } from "../components/Common.style";
 import Contents from "../components/ChildMain/Contents";
 import { Keyword } from "../components/ChildMain/ChildMain.style";
+import ContentsSecond from "../components/ChildMain/ContentsSecond";
 
 const ChildMain = () => {
   const keywordText = ["#등산", "#맛집", "#통증"];
@@ -65,11 +66,11 @@ const ChildMain = () => {
           })}
         </div>
 
-        <Contents
+        <ContentsSecond
           image={detailImage}
           title={"오늘의 하루 자세히 보기"}
           contents={"자세히"}
-        ></Contents>
+        ></ContentsSecond>
       </div>
     </div>
   );

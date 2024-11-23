@@ -1,12 +1,12 @@
 import { COLOR } from "../../constants/color";
-import { ContentsContainer } from "./ChildMain.style";
+import { ContentsContainer, ContentsWrapper } from "./ChildMain.style";
 
 const Contents = ({ style, image, title, contents }) => {
   return (
     <div style={style}>
       <ContentsContainer>
-        <div style={{ display: "flex", gap: 12 }}>
-          <img src={image} alt="" />
+        <ContentsWrapper>
+          <img style={{width: 38, height: 38}} src={image} alt="" />
 
           <div style={{ display: "flex", flexDirection: "column" }}>
             <span
@@ -20,7 +20,7 @@ const Contents = ({ style, image, title, contents }) => {
             </span>
             <span style={{ color: COLOR.gray, fontSize: 15 }}>{contents}</span>
           </div>
-        </div>
+        </ContentsWrapper>
       </ContentsContainer>
     </div>
   );
