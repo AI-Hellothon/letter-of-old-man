@@ -57,7 +57,7 @@ const Modal = () => {
         <VoiceChoiceContainer>
           {voices.map((item, index) => {
             return (
-              <VoiceChoiceItem>
+              <VoiceChoiceItem key={index}>
                 <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
                   <img
                     src={soundImage}

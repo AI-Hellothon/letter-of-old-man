@@ -49,6 +49,7 @@ const SpeechToText = () => {
   const [chatResult, setChatResult] = useState([]);
   const [isChatLoading, setIsChatLoading] = useState(false);
   const [isChat, setIsChat] = useState(false);
+  const [chatText, setChatText] = useState("");
 
   const messageEndRef = useRef(null);
 
@@ -69,6 +70,18 @@ const SpeechToText = () => {
       messageEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
   }, [chatResult, transcription]);
+
+  const requestEliceChat = async (text) => {
+    try {
+      const chatResponse = await postChat(text);
+      // console.log(chatResponse.data?.choices[0]?.message?.content)
+
+      return chatResponse.data?.choices[0]?.message?.content;
+    } catch (e) {
+      return "죄송하지만 다시 요청해주세요.";
+      throw new Error("엘리스 채팅 오류: ", e);
+    }
+  };
 
   const startRecording = async () => {
     try {
@@ -102,20 +115,8 @@ const SpeechToText = () => {
             setTranscription([...transcription, tts]);
             setIsChatLoading(true);
 
-            try {
-              const chatResponse = await postChat(tts);
-              // console.log(chatResponse.data?.choices[0]?.message?.content)
-
-              setChatResult([
-                ...chatResult,
-                chatResponse.data?.choices[0]?.message?.content,
-              ]);
-            } catch (e) {
-              setChatResult([...chatResult, "죄송하지만 다시 요청해주세요."]);
-              throw new Error("엘리스 채팅 오류: ", e);
-            } finally {
-              setIsChatLoading(false);
-            }
+            const chatResponse = await requestEliceChat(tts);
+            setChatResult([...chatResult, chatResponse]);
           } else {
             console.log(
               "No transcription results in the API response:",
@@ -131,6 +132,7 @@ const SpeechToText = () => {
         }
       });
 
+      setIsChatLoading(false);
       setRecording(true);
       setMediaRecorder(recorder);
     } catch (error) {
@@ -322,27 +324,42 @@ const SpeechToText = () => {
                 backgroundColor: "white",
                 borderRadius: 28,
                 display: "flex",
-                gap: 18
+                gap: 18,
               }}
             >
-              <ButtonContainer onClick={(e)=>{
-                setIsChat(false);
-              }}>
+              <ButtonContainer
+                onClick={(e) => {
+                  setIsChat(false);
+                }}
+              >
                 <img src={closeImage} alt="" />
               </ButtonContainer>
               <input
                 style={{
                   border: "none",
-                  flex:1  
+                  flex: 1,
                 }}
                 type="text"
+                onChange={(e) => {
+                  setChatText(e.target.value);
+                  // console.log(chatText);
+                }}
+                value={chatText}
               />
               <ButtonContainer
                 style={{
                   backgroundColor: COLOR.primaryColor,
                   width: 51,
                   height: 51,
-                  
+                }}
+                onClick={async (e) => {
+                  setTranscription([...transcription, chatText]);
+                  setIsChatLoading(true);
+
+                  const chatResponse = await requestEliceChat(chatText);
+                  setChatResult([...chatResult, chatResponse]);
+                  setChatText("");
+                  setIsChatLoading(false);
                 }}
               >
                 <img src={textWhiteImage} alt="" />
@@ -398,7 +415,7 @@ const SpeechToText = () => {
               position: "absolute",
               right: "6%",
             }}
-            onClick={(e)=>{
+            onClick={(e) => {
               setIsChat(true);
             }}
           >
