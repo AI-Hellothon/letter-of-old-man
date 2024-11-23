@@ -28,6 +28,8 @@ import getCurrentDate from "../../utils/getCurrentDate";
 import { getNaverStt } from "../../apis/api/naverTts";
 import { useRecoilState } from "recoil";
 import { speakerIndexState } from "../../store/headerAtom";
+import { getRecord } from "../../apis/api/record";
+import eliceTts from "../../apis/eliceTts";
 
 // Function to convert audio blob to base64 encoded string
 const audioBlobToBase64 = (blob) => {
@@ -48,6 +50,48 @@ const audioBlobToBase64 = (blob) => {
   });
 };
 
+const base64ToBlob = (base64, mimeType) => {
+  const byteCharacters = atob(base64); // Base64 디코딩
+  const byteArrays = [];
+
+  for (let offset = 0; offset < byteCharacters.length; offset += 1024) {
+    const slice = byteCharacters.slice(offset, offset + 1024);
+    const byteNumbers = new Array(slice.length);
+
+    for (let i = 0; i < slice.length; i++) {
+      byteNumbers[i] = slice.charCodeAt(i);
+    }
+
+    const byteArray = new Uint8Array(byteNumbers);
+    byteArrays.push(byteArray);
+  }
+
+  return new Blob(byteArrays, { type: mimeType });
+};
+
+// 예시: Base64 문자열을 .mp4로 변환
+const convertBase64ToM4A = async (base64Audio) => {
+  // 'audio/m4a' MIME 타입으로 Blob 생성
+  const audioBlob = base64ToBlob(base64Audio, "audio/m4a");
+
+  // File 객체로 변환 (파일명 지정)
+  const audioFile = new File([audioBlob], "audio.m4a", { type: "audio/m4a" });
+
+  return audioFile; // 파일 객체 반환
+};
+
+const playWavFromBase64 = (base64Audio) => {
+  // Base64 문자열을 Blob으로 변환 (WAV 파일 MIME 타입)
+  const audioBlob = base64ToBlob(base64Audio, "audio/wav");
+
+  // Blob을 URL로 변환
+  const audioURL = URL.createObjectURL(audioBlob);
+
+  // <audio> 태그를 만들어서 재생
+  const audioElement = new Audio(audioURL);
+  audioElement.play(); // 재생 시작
+};
+
 const SpeechToText = () => {
   const [recording, setRecording] = useState(false);
   const [mediaRecorder, setMediaRecorder] = useState(null);
@@ -63,7 +107,7 @@ const SpeechToText = () => {
 
   const messageEndRef = useRef(null);
 
-  const firstQuestion = `안녕하세요.\n무엇을 도와드릴까요?`;
+  const firstQuestion = `안녕하세요. 무엇을 도와드릴까요?`;
 
   // 채팅 데이터 불러오기
   useEffect(() => {
@@ -99,10 +143,38 @@ const SpeechToText = () => {
     // TTS 음성을 가져오고 재생
     setIsTtsLoading(true);
     setNowTtsIndex(ttsIndex);
-    console.log(nowTtsIndex);
+    // console.log(nowTtsIndex);
 
     try {
       if (index == 0) {
+        const myWav = await getRecord();
+        // console.log(myWav);
+
+        const mp4FileURL = await convertBase64ToM4A(myWav.data.audioData);
+        // console.log(mp4FileURL);
+
+        // eliceTts 함수 호출
+        const response = await eliceTts(mp4FileURL, text);
+        console.log(response);
+        const blob = new Blob([response.data]);
+
+        // Blob을 ArrayBuffer로 변환
+        blob
+          .arrayBuffer()
+          .then(function (arrayBuffer) {
+            // console.log("arrayBuffer: ",arrayBuffer)
+            const audioBlob = new Blob([arrayBuffer], { type: "audio/mp3" });
+
+            // Blob을 URL로 변환하여 오디오 객체 생성
+            const audioUrl = URL.createObjectURL(audioBlob);
+            const audio = new Audio(audioUrl);
+
+            // 음성 파일 재생
+            audio.play();
+          })
+          .catch(function (error) {
+            console.error("Error converting Blob to ArrayBuffer:", error);
+          });
       } else {
         const audio = await getNaverStt(index, text);
       }
@@ -242,7 +314,7 @@ const SpeechToText = () => {
               handlePlayTts(speakerIndex, firstQuestion, 0);
             }}
           >
-            { nowTtsIndex==0 && isTtsLoading ?  (
+            {nowTtsIndex == 0 && isTtsLoading ? (
               <img
                 style={{ animation: "rotate 1.5s linear infinite" }}
                 src={loadingImage}
@@ -274,10 +346,14 @@ const SpeechToText = () => {
                         padding: 10,
                       }}
                       onClick={(e) => {
-                        handlePlayTts(speakerIndex, chatResult[index], index+1);
+                        handlePlayTts(
+                          speakerIndex,
+                          chatResult[index],
+                          index + 1
+                        );
                       }}
                     >
-                      { nowTtsIndex==index+1 && isTtsLoading ? (
+                      {nowTtsIndex == index + 1 && isTtsLoading ? (
                         <img
                           style={{ animation: "rotate 1.5s linear infinite" }}
                           src={loadingImage}

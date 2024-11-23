@@ -8,6 +8,7 @@ import { COLOR } from "../constants/color";
 import { STYLE } from "../constants/style";
 
 import { useState, useEffect, useRef } from "react";
+import { postRecord } from "../apis/api/record";
 
 const ChildRecord = () => {
   const [isRecording, setIsRecording] = useState(false);
@@ -18,47 +19,63 @@ const ChildRecord = () => {
   const text =
     "안녕하세요 반갑습니다\n저녁은 드셨나요?\n오늘 하루 어때셨나요?\n정말 잘하셨어요!\n뭐하고 계신가요?\n약 드셨습니까?\n제 생각에 나무는 산입니다\n노래가 정말 좋습니다\n창밖을 보세요 눈이 오네요 깔깔";
 
-  useEffect(() => {
-    // 녹음 시작
-    if (isRecording) {
-      navigator.mediaDevices
-        .getUserMedia({ audio: true })
-        .then((stream) => {
-          const mediaRecorder = new MediaRecorder(stream);
-          mediaRecorderRef.current = mediaRecorder;
-          audioChunksRef.current = []; // 기존 청크 초기화
-
-          mediaRecorder.ondataavailable = (event) => {
-            // 녹음된 데이터 청크 저장
-            if (event.data.size > 0) {
-              audioChunksRef.current.push(event.data);
-            }
-          };
-
-          mediaRecorder.onstop = () => {
-            // 녹음이 중지된 후 청크를 Blob으로 변환
-            const audioBlob = new Blob(audioChunksRef.current, {
-              type: "audio/wav",
-            });
-
-            // Blob을 URL로 변환하여 재생할 수 있도록 함
-            const audioURL = URL.createObjectURL(audioBlob);
-            setAudioURL(audioURL);
-          };
-
-          mediaRecorder.start(); // 녹음 시작
-        })
-        .catch((error) => {
-          console.error("Error accessing microphone:", error);
-        });
-    } else {
-      // 녹음 중지
-      if (mediaRecorderRef.current) {
-        mediaRecorderRef.current.stop();
-        mediaRecorderRef.current = null;
+    useEffect(() => {
+      // 녹음 시작
+      if (isRecording) {
+        navigator.mediaDevices
+          .getUserMedia({ audio: true })
+          .then((stream) => {
+            const mediaRecorder = new MediaRecorder(stream);
+            mediaRecorderRef.current = mediaRecorder;
+            audioChunksRef.current = []; // 기존 청크 초기화
+    
+            mediaRecorder.ondataavailable = (event) => {
+              // 녹음된 데이터 청크 저장
+              if (event.data.size > 0) {
+                audioChunksRef.current.push(event.data);
+              }
+            };
+    
+            mediaRecorder.onstop = async () => {
+              // 녹음이 중지된 후 청크를 Blob으로 변환
+              const audioBlob = new Blob(audioChunksRef.current, {
+                type: "audio/wav",
+              });
+    
+              // Blob을 URL로 변환하여 재생할 수 있도록 함
+              const audioURL = URL.createObjectURL(audioBlob);
+              setAudioURL(audioURL);
+    
+              // Blob -> Base64 변환
+              const reader = new FileReader();
+              reader.readAsDataURL(audioBlob);
+              reader.onloadend = async () => {
+                const base64Audio = reader.result.split(",")[1]; // Base64 데이터만 추출
+                const fileName = `도연`;
+    
+                try {
+                  // 서버에 Base64 데이터를 전송
+                  const response = await postRecord(base64Audio, fileName);
+                  console.log("Server Response:", response);
+                } catch (error) {
+                  console.error("Error posting audio to server:", error);
+                }
+              };
+            };
+    
+            mediaRecorder.start(); // 녹음 시작
+          })
+          .catch((error) => {
+            console.error("Error accessing microphone:", error);
+          });
+      } else {
+        // 녹음 중지
+        if (mediaRecorderRef.current) {
+          mediaRecorderRef.current.stop();
+          mediaRecorderRef.current = null;
+        }
       }
-    }
-  }, [isRecording]);
+    }, [isRecording]);
 
   return (
     <div>
