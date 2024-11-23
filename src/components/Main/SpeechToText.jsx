@@ -22,7 +22,8 @@ import textWhiteImage from "../../images/SpeechToText/text-white.png";
 
 import { FONT } from "../../constants/font";
 import googleSpeechToText from "../../apis/googleStt";
-import { saveChat } from "../../apis/api/chat";
+import { getChat, saveChat } from "../../apis/api/chat";
+import getCurrentDate from "../../utils/getCurrentDate";
 
 // Function to convert audio blob to base64 encoded string
 const audioBlobToBase64 = (blob) => {
@@ -55,6 +56,20 @@ const SpeechToText = () => {
   const messageEndRef = useRef(null);
 
   const firstQuestion = `안녕하세요.\n무엇을 도와드릴까요?`;
+
+  // 채팅 데이터 불러오기
+  useEffect(() => {
+    const currentDate = getCurrentDate();
+
+    const fetchChatLog = async (date) => {
+      const res = await getChat(date);
+      // console.log(res);
+      setTranscription(res.data.map(item => item.question));
+      setChatResult(res.data.map(item => item.answer));
+    };
+
+    fetchChatLog(currentDate);
+  }, []);
 
   // Cleanup function to stop recording and release media resources
   useEffect(() => {

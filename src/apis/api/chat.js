@@ -1,12 +1,12 @@
 import axios from "axios";
-import { baseInstance } from "../util/instance"
+import { baseInstance, ngrokInstance } from "../util/instance"
 
 export const saveChat = async({question, answer})=>{
-    const response = await baseInstance.post(`/conversations`, {question: question, answer: answer});
+    const response = await ngrokInstance.post(`/conversations`, {question: question, answer: answer});
     return response;
 }
 
 export const getChat = async(date)=>{
-    const response = await baseInstance.get(`/conversations/${date}`);
+    const response = await ngrokInstance.get(`/conversations/${date}`);
     return response;
 }
