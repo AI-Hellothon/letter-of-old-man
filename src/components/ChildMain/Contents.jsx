@@ -1,9 +1,9 @@
 import { COLOR } from "../../constants/color";
 import { ContentsContainer, ContentsWrapper } from "./ChildMain.style";
 
-const Contents = ({ style, image, title, contents }) => {
+const Contents = ({ style, image, title, contents, onClick }) => {
   return (
-    <div style={style}>
+    <div style={style} onClick={onClick}>
       <ContentsContainer>
         <ContentsWrapper>
           <img style={{width: 38, height: 38}} src={image} alt="" />

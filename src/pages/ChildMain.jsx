@@ -61,23 +61,20 @@ const ChildMain = () => {
 
           <Contents
             image={keywordImage}
-            title={"주요 키워드"}
-            contents={"3개로 간추려 보았어요"}
+            title={"커스텀 음성"}
+            contents={"부모님을 위해 녹음하기"}
+            style={{ cursor: "pointer" }}
+            onClick={(e) => {
+              console.log("hi")
+              navigate("/child/record");
+            }}
           ></Contents>
-
-          {/* 키워드 */}
-          <div style={{ display: "flex", gap: 12 }}>
-            {keywordText.map((item, index) => {
-              return <Keyword key={index}>{item}</Keyword>;
-            })}
-          </div>
 
           <ContentsSecond
             title={"오늘의 하루 요약"}
             contents={"자세히"}
-
-            onClick={(e)=>{
-              navigate("/child/report")
+            onClick={(e) => {
+              navigate("/child/report");
             }}
           ></ContentsSecond>
         </div>

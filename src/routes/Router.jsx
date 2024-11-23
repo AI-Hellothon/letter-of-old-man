@@ -4,6 +4,7 @@ import ChatBot from "../components/ChatBot";
 import ChildMain from "../pages/ChildMain";
 import Report from "../pages/Report";
 import ChatLog from "../pages/ChatLog";
+import ChildRecord from "../pages/ChildRecord";
 
 const router = createBrowserRouter(
   [
@@ -26,6 +27,10 @@ const router = createBrowserRouter(
     {
       path: "/child/chat-log",
       element: <ChatLog />
+    },
+    {
+      path: "/child/record",
+      element: <ChildRecord />
     }
   ],
   {
