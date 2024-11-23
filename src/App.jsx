@@ -18,7 +18,6 @@ function Root() {
       >
         <Container>
           {isModal && <Modal />}
-          <Header />
           <Router></Router>
         </Container>
       </div>
