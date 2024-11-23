@@ -1,7 +1,7 @@
 import axios from "axios";
 import React, { useState, useEffect, useRef } from "react";
 
-import postChat from "../../api/eliceChat";
+import postChat from "../../apis/eliceChat";
 
 import {
   ChatAnswer,
@@ -21,7 +21,8 @@ import closeImage from "../../images/common/close.png";
 import textWhiteImage from "../../images/SpeechToText/text-white.png";
 
 import { FONT } from "../../constants/font";
-import googleSpeechToText from "../../api/googleStt";
+import googleSpeechToText from "../../apis/googleStt";
+import { saveChat } from "../../apis/api/chat";
 
 // Function to convert audio blob to base64 encoded string
 const audioBlobToBase64 = (blob) => {
@@ -83,6 +84,11 @@ const SpeechToText = () => {
     }
   };
 
+  const requestEliceChatResultHandler = (chat) => {
+    setChatResult([...chatResult, chat]);
+    setIsChatLoading(false);
+  };
+
   const startRecording = async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -115,9 +121,18 @@ const SpeechToText = () => {
             setTranscription([...transcription, tts]);
             setIsChatLoading(true);
 
-            const chatResponse = await requestEliceChat(tts);
-            setChatResult([...chatResult, chatResponse]);
-            setIsChatLoading(false);
+            try {
+              const chatResponse = await requestEliceChat(tts);
+
+              requestEliceChatResultHandler(chatResponse);
+
+              const res = await saveChat({
+                question: tts,
+                answer: chatResponse,
+              });
+            } catch (error) {
+              requestEliceChatResultHandler(`tts save chat Error: ${error}`);
+            }
           } else {
             console.log(
               "No transcription results in the API response:",
@@ -338,7 +353,7 @@ const SpeechToText = () => {
                 style={{
                   border: "none",
                   fontSize: 20,
-                  width: "70%"
+                  width: "70%",
                 }}
                 type="text"
                 onChange={(e) => {
@@ -358,9 +373,17 @@ const SpeechToText = () => {
                   setIsChatLoading(true);
 
                   const chatResponse = await requestEliceChat(chatText);
-                  setChatResult([...chatResult, chatResponse]);
-                  setChatText("");
-                  setIsChatLoading(false);
+
+                  requestEliceChatResultHandler(chatResponse);
+                  try {
+                    const res = await saveChat({
+                      question: chatText,
+                      answer: chatResponse,
+                    });
+                    setChatText("");
+                  } catch (error) {
+                    throw new Error(`채팅 인풋 Error: ${error}`);
+                  }
                 }}
               >
                 <img src={textWhiteImage} alt="" />

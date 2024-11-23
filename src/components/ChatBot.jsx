@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import postChat from "../api/eliceChat";
+import postChat from "../apis/eliceChat";
 
 const ChatBot = () => {
   const [text, setText] = useState("");
