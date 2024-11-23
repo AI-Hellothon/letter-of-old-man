@@ -5,7 +5,7 @@ export const getNaverStt = async (index, text) => {
   const speaker = ["", "nara_call", "jinho", "nhajun"];
 
   try {
-    const response = await baseInstance.get(
+    const response = await ngrokInstance.get(
       `/naver?speaker=${speaker[index]}&text=${text}`,
       {
         responseType: "arraybuffer", // 음성 파일이 바이너리 데이터이므로 arraybuffer로 응답을 받습니다.
