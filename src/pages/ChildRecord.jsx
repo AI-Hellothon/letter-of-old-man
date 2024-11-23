@@ -7,13 +7,58 @@ import mikeImage from "../images/SpeechToText/mike.png";
 import { COLOR } from "../constants/color";
 import { STYLE } from "../constants/style";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 
 const ChildRecord = () => {
   const [isRecording, setIsRecording] = useState(false);
+  const [audioURL, setAudioURL] = useState(""); // 녹음된 파일의 URL 저장
+  const mediaRecorderRef = useRef(null); // MediaRecorder 객체를 참조하기 위한 ref
+  const audioChunksRef = useRef([]); // 녹음된 데이터 청크를 저장
 
   const text =
     "안녕하세요 반갑습니다\n저녁은 드셨나요?\n오늘 하루 어때셨나요?\n정말 잘하셨어요!\n뭐하고 계신가요?\n약 드셨습니까?\n제 생각에 나무는 산입니다\n노래가 정말 좋습니다\n창밖을 보세요 눈이 오네요 깔깔";
+
+  useEffect(() => {
+    // 녹음 시작
+    if (isRecording) {
+      navigator.mediaDevices
+        .getUserMedia({ audio: true })
+        .then((stream) => {
+          const mediaRecorder = new MediaRecorder(stream);
+          mediaRecorderRef.current = mediaRecorder;
+          audioChunksRef.current = []; // 기존 청크 초기화
+
+          mediaRecorder.ondataavailable = (event) => {
+            // 녹음된 데이터 청크 저장
+            if (event.data.size > 0) {
+              audioChunksRef.current.push(event.data);
+            }
+          };
+
+          mediaRecorder.onstop = () => {
+            // 녹음이 중지된 후 청크를 Blob으로 변환
+            const audioBlob = new Blob(audioChunksRef.current, {
+              type: "audio/wav",
+            });
+
+            // Blob을 URL로 변환하여 재생할 수 있도록 함
+            const audioURL = URL.createObjectURL(audioBlob);
+            setAudioURL(audioURL);
+          };
+
+          mediaRecorder.start(); // 녹음 시작
+        })
+        .catch((error) => {
+          console.error("Error accessing microphone:", error);
+        });
+    } else {
+      // 녹음 중지
+      if (mediaRecorderRef.current) {
+        mediaRecorderRef.current.stop();
+        mediaRecorderRef.current = null;
+      }
+    }
+  }, [isRecording]);
 
   return (
     <div>
@@ -56,7 +101,7 @@ const ChildRecord = () => {
         </div>
       </div>
 
-      <div style={{ marginTop: 30, display:"flex", justifyContent:"center"}}>
+      <div style={{ marginTop: 30, display: "flex", justifyContent: "center" }}>
         {isRecording ? (
           <ButtonContainer
             style={{
@@ -66,7 +111,7 @@ const ChildRecord = () => {
               zIndex: 10,
               position: "relative",
             }}
-            onClick={(e) => {
+            onClick={() => {
               setIsRecording(false);
             }}
           >
@@ -89,7 +134,7 @@ const ChildRecord = () => {
               height: 98,
               zIndex: 10,
             }}
-            onClick={(e) => {
+            onClick={() => {
               setIsRecording(true);
             }}
           >
@@ -97,6 +142,13 @@ const ChildRecord = () => {
           </ButtonContainer>
         )}
       </div>
+
+      {/* 녹음된 오디오 재생 */}
+      {/* {audioURL && (
+        <div style={{ marginTop: 20, textAlign: "center" }}>
+          <audio controls src={audioURL}></audio>
+        </div>
+      )} */}
     </div>
   );
 };
