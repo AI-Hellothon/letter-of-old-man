@@ -116,6 +116,7 @@ const SpeechToText = () => {
             setIsChatLoading(true);
 
             const chatResponse = await requestEliceChat(tts);
+            setIsChatLoading(false);
             setChatResult([...chatResult, chatResponse]);
           } else {
             console.log(
@@ -132,7 +133,6 @@ const SpeechToText = () => {
         }
       });
 
-      setIsChatLoading(false);
       setRecording(true);
       setMediaRecorder(recorder);
     } catch (error) {
