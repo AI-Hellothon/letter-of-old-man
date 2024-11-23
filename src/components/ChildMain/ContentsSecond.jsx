@@ -4,7 +4,7 @@ import { ContentsContainer, ContentsWrapper } from "./ChildMain.style";
 import detailImage from "../../images/ChildMain/detail.png"
 import linkImage from "../../images/ChildMain/link.png";
 
-const ContentsSecond = ({ style, title, contents }) => {
+const ContentsSecond = ({ style, title, contents, onClick }) => {
   return (
     <ContentsContainer
       style={{
@@ -14,6 +14,8 @@ const ContentsSecond = ({ style, title, contents }) => {
         alignItems: "center",
         cursor: "pointer",
       }}
+
+      onClick={onClick}
     >
       <ContentsWrapper>
         <img style={{ width: 38, height: 38 }} src={detailImage} alt="" />

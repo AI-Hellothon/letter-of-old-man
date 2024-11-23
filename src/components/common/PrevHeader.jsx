@@ -1,8 +1,11 @@
 import prevImage from "../../images/common/prev.png";
 import { ButtonContainer } from "../Common.style";
 import { COLOR } from "../../constants/color";
+import { useNavigate } from "react-router-dom";
 
 const PrevHeader = ({ text }) => {
+  const navigate = useNavigate();
+
   return (
     <div
       style={{
@@ -12,7 +15,9 @@ const PrevHeader = ({ text }) => {
         alignItems: "center",
       }}
     >
-      <ButtonContainer>
+      <ButtonContainer onClick={(e)=>{
+        navigate(-1);
+      }}>
         <img src={prevImage} alt="" />
       </ButtonContainer>
       <span style={{ color: COLOR.questionFontColor, fontSize: 24 }}>

@@ -4,8 +4,11 @@ import ContentsSecond from "../components/ChildMain/ContentsSecond";
 
 import { STYLE } from "../constants/style";
 import { ReportContentsWrapper } from "../components/Report/Report.style";
+import { useNavigate } from "react-router-dom";
 
 const Report = () => {
+  const navigate = useNavigate();
+
   const reportData = [
     { title: "일상생활", contents: ["내용1", "내용2", "내용3"] },
     { title: "일상생활", contents: ["내용1", "내용2"] },
@@ -32,8 +35,12 @@ const Report = () => {
 
         <ContentsSecond
           style={{ marginTop: 16 }}
-          title={"오늘의 하루 자세히 보기"}
+          title={"전체 대화"}
           contents={"자세히"}
+
+          onClick={()=>{
+            navigate("/child/chat-log")
+          }}
         />
       </div>
     </div>

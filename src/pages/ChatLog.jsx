@@ -44,7 +44,7 @@ const ChatLog = () => {
       <div style={{ padding: STYLE.padding }}>
         <div
           style={{
-            height: `calc(100vh - 200px)`,
+            height: `calc(100vh - 100px)`,
             overflow: "auto"
           }}
         >
@@ -73,12 +73,6 @@ const ChatLog = () => {
             );
           })}
         </div>
-
-        <ContentsSecond
-          style={{ marginTop: 16 }}
-          title={"오늘의 하루 자세히 보기"}
-          contents={"자세히"}
-        />
       </div>
     </div>
   );
