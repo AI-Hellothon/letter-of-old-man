@@ -1,3 +1,3 @@
 export const FONT = {
-    defaultSize: 22
+    defaultSize: 22,
 }

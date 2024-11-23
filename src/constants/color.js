@@ -3,5 +3,6 @@ export const COLOR = {
   backgroundColor : "#EAEEF3",
   answerColor : "#5FB3AA",
   questionFontColor : "#48668A",
-  primaryColor15: "#6680E915"
+  primaryColor15: "#6680E915",
+  gray: "#92A5BE"
 }
