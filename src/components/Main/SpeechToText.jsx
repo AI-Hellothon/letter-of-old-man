@@ -386,7 +386,7 @@ const SpeechToText = () => {
           alignItems: "center",
           justifyContent: "center",
           position: "relative",
-          padding: "12% 0",
+          padding: "16% 0",
           overflow: "hidden",
           backgroundColor: "#F1F7FF",
         }}

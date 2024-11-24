@@ -138,11 +138,12 @@ const ChildRecord = () => {
                 position: "absolute",
                 top: -30,
                 color: COLOR.questionFontColor,
+                fontSize: 16
               }}
             >
               녹음 중...
             </span>
-            <img src={soundLargeImage} alt="" />
+            <img style={{width: 62, height: 62}} src={soundLargeImage} alt="" />
           </ButtonContainer>
         ) : (
           <ButtonContainer

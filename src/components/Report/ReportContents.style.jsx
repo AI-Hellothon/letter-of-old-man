@@ -4,9 +4,11 @@ import { STYLE } from "../../constants/style";
 import { COLOR } from "../../constants/color";
 
 export const ReportContentsContainer = styled.div`
-  background-color: white;
+  background-color: ${COLOR.white90};
   border-radius: ${STYLE.borderRadius}px;
   padding: 18px;
+  box-shadow: 0px 4px 8.4px 2px ${COLOR.shadow};
+  border: 0.2px solid ${COLOR.border};
 `;
 
 export const ReportContentsTitle = styled.div`

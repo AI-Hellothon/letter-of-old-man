@@ -12,7 +12,7 @@ import getCurrentDate from "../utils/getCurrentDate";
 const Report = () => {
   const navigate = useNavigate();
 
-  const [reportData, setReportData] = useState([]); 
+  const [reportData, setReportData] = useState([]);
   const [loading, setLoading] = useState(true); // 로딩 상태 추가
 
   useEffect(() => {
@@ -43,7 +43,7 @@ const Report = () => {
     <div>
       <PrevHeader text={"오늘 하루 요약"} />
 
-      <div style={{ padding: STYLE.padding }}>
+      <div style={{ paddingTop: 16, paddingBottom: 0 }}>
         {loading ? ( // 로딩 중일 때 로딩 화면 표시
           <div style={{ textAlign: "center", padding: "20px" }}>
             <p>Loading...</p>
@@ -60,16 +60,19 @@ const Report = () => {
                   />
                 );
               })}
+              <div style={{ height: 10 }}></div>
             </ReportContentsWrapper>
 
-            <ContentsSecond
-              style={{ marginTop: 16 }}
-              title={"전체 대화"}
-              contents={"자세히"}
-              onClick={() => {
-                navigate("/child/chat-log");
-              }}
-            />
+            <div style={{padding: `0px 30px`}}>
+              <ContentsSecond
+                style={{ marginTop: 16 }}
+                title={"전체 대화"}
+                contents={"자세히"}
+                onClick={() => {
+                  navigate("/child/chat-log");
+                }}
+              />
+            </div>
           </>
         )}
       </div>

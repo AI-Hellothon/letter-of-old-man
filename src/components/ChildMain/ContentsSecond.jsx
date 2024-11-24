@@ -25,7 +25,6 @@ const ContentsSecond = ({ style, title, contents, onClick }) => {
             style={{
               color: COLOR.questionFontColor,
               fontSize: 18,
-              fontWeight: 700,
             }}
           >
             {title}

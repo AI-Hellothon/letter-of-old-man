@@ -4,7 +4,8 @@ import { STYLE } from "../../constants/style";
 export const ReportContentsWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 18px;
   overflow: auto;
-  height: calc(100vh - 200px);
+  height: calc(100vh - 230px);
+  padding: 0px 30px;
 `;

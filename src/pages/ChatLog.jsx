@@ -46,7 +46,7 @@ const ChatLog = () => {
     <div>
       <PrevHeader text={"전체 대화"} />
 
-      <div style={{ padding: STYLE.padding, paddingBottom: 0 }}>
+      <div style={{ padding: `10px ${STYLE.padding}px` }}>
         <div
           style={{
             height: `calc(100vh - 100px)`,

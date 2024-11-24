@@ -9,7 +9,7 @@ const PrevHeader = ({ text }) => {
   return (
     <div
       style={{
-        padding: 15,
+        padding: `28px 0px 15px 30px`,
         display: "flex",
         gap: 12,
         alignItems: "center",

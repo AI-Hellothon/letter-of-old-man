@@ -4,15 +4,16 @@ import { COLOR } from "../../constants/color";
 
 export const ContentsContainer = styled.div`
   background-color: white;
-  padding: 14px;
+  padding: 18px;
   border-radius: ${STYLE.borderRadius}px;
   width: 100%;
   box-shadow: 0px 4px 8.4px 2px ${COLOR.shadow};
 `;
 
 export const ContentsWrapper = styled.div`
+  margin-left: 4px;
   display: flex;
-  gap: 12px;
+  gap: 16px;
   align-items: center;
 `;
 

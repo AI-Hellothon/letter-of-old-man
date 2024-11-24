@@ -15,6 +15,7 @@ import { Keyword } from "../components/ChildMain/ChildMain.style";
 import ContentsSecond from "../components/ChildMain/ContentsSecond";
 import Header from "../components/common/Header";
 import { useNavigate } from "react-router-dom";
+import ChildHeader from "../components/common/ChildHeader";
 
 const ChildMain = () => {
   const keywordText = ["#등산", "#맛집", "#통증"];
@@ -23,7 +24,7 @@ const ChildMain = () => {
 
   return (
     <>
-      <Header />
+      <ChildHeader />
       <div style={{ padding: `0px ${STYLE.padding}px` }}>
         {/* 이미지 부분 */}
         <div

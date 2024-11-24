@@ -13,7 +13,6 @@ const Contents = ({ style, image, title, contents, onClick }) => {
               style={{
                 color: COLOR.questionFontColor,
                 fontSize: 18,
-                fontWeight: 700,
               }}
             >
               {title}
